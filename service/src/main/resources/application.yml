@@ -1,0 +1,33 @@
+server:
+  port: 7070
+spring:
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+  jjwt:
+    secretKey: spring_security_secret_key
+    expiredDate: 8640000000
+  sql:
+    init:
+      mode: never
+  datasource:
+      url: jdbc:postgresql://localhost:5432/notification
+      username: postgres
+      password: 4139513
+      driver-class-name: org.postgresql.Driver
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
