@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 @Entity
 public class Role extends AbsEntity implements GrantedAuthority {
 
-    @Column
+    @Column(name = "role_name")
     private String roleName;
 
     @Override

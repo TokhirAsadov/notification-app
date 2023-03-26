@@ -29,20 +29,25 @@ public abstract class AbsEntity {
     private String id;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(updatable = false,name = "created_at")
     @NotNull
     private Timestamp createdAt;
 
+    @Column(name = "updated_at")
     @UpdateTimestamp
     private Timestamp updatedAt;
 
     @CreatedBy
+    @Column(name = "created_by")
     private String createdBy;
 
     @LastModifiedBy
+    @Column(name = "updated_by")
     private String updatedBy;
 
+    @Column(name = "active")
     private Boolean active=true;
+    @Column(name = "deleted")
     private Boolean deleted=false;
 
     public AbsEntity(String id) {

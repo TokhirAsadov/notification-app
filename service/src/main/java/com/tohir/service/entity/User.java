@@ -17,27 +17,35 @@ import java.util.Set;
 @Entity(name = "users")
 public class User extends AbsEntity implements UserDetails {
 
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "middle_name")
     private String middleName;
 
+    @Column(name = "login")
     private String login;
-
+    @Column(name = "password")
     private String password;
+    @Column(name = "email")
     private String email;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @Column
-    private Boolean accountNonExpired = true;
-    @Column
-    private Boolean accountNonLocked = true;
-    @Column
-    private Boolean credentialsNonExpired = true;
-    @Column
+    @Column(name = "enabled")
     private Boolean enabled = true;
+
+    @Column(name = "credentials_non_expired")
+    private Boolean credentialsNonExpired = true;
+
+    @Column(name = "account_non_locked")
+    private Boolean accountNonLocked = true;
+
+    @Column(name = "account_non_expired")
+    private Boolean accountNonExpired = true;
 
 
 
@@ -74,5 +82,14 @@ public class User extends AbsEntity implements UserDetails {
     }
 
 
-
+    public User(String id, String firstName, String lastName, String middleName, String login, String password, String email, Set<Role> roles) {
+        super(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
 }
