@@ -63,5 +63,9 @@ public class UserController {
         return ResponseEntity.status(204).body(userService.deleteById(id));
     }
 
+    @GetMapping("/getUserFields")
+    public HttpEntity<?> getUserFields(@CurrentUser User user){
+        return ResponseEntity.ok(userService.getUserFields(user.getId()));
+    }
 
 }

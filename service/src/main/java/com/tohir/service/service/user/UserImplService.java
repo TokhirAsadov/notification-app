@@ -89,6 +89,14 @@ public class UserImplService implements UserService{
         return new ResToken(token);
     }
 
+    @Override
+    public UserDto getUserFields(String id) {
+        Optional<User> optional = userRepository.findById(id);
+        return optional
+                .map(this::generateUserDto)
+                .orElseGet(UserDto::new);
+    }
+
     public ApiResponse update(UserDto dto){
         Optional<User> optional = userRepository.findById(dto.getId());
         if (optional.isPresent()){

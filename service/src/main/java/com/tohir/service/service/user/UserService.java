@@ -14,4 +14,6 @@ public interface UserService {
     ApiResponse findById(String id);
 
     ResToken login(SignInDto signInDto);
+
+    UserDto getUserFields(String id);
 }
