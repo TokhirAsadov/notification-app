@@ -30,4 +30,14 @@ public class PermissionPost extends AbsEntity {
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<PCommit> commits;
+
+    public PermissionPost(String id, String content, Date fromDate, Date toDate, String description, PPostStatus status, Set<PCommit> commits) {
+        super(id);
+        this.content = content;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.description = description;
+        this.status = status;
+        this.commits = commits;
+    }
 }

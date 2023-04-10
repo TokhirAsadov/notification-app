@@ -17,4 +17,8 @@ public class PCommit extends AbsEntity {
     @Column(name = "content")
     private String content;
 
+    public PCommit(String id, String content) {
+        super(id);
+        this.content = content;
+    }
 }
