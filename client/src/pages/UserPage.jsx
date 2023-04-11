@@ -17,8 +17,8 @@ import History from "../components/permission/History";
 import UserDashboard from "../components/user/UserDashboard";
 import {BASE_URL, getHeaders} from "../utills/ServiceUrls";
 import axios from "axios";
-import PermissionItem from "../components/permission/PermissionItem";
 import Permissions from "../components/permission/Permissions";
+import {useSelector} from "react-redux";
 
 const {Header, Content, Sider} = Layout;
 
@@ -27,6 +27,7 @@ const ButtonGroup = Button.Group;
 const UserPage = () => {
 
   const [posts,setPosts] = useState([]);
+  const user = useSelector(state => state?.user?.user)
 
   const {headers} = getHeaders();
 
@@ -68,7 +69,7 @@ const UserPage = () => {
   };
 
   useEffect(()=> {
-    const sse = new EventSource(BASE_URL+'/post/stream');
+    const sse = new EventSource(BASE_URL+'/post/stream?userId='+user?.id);
 
     sse.addEventListener("post-list-event",(event) => {
       const data = JSON.parse(event.data);
@@ -103,23 +104,6 @@ const UserPage = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['1']}
-          /*items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'nav 1',
-            },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
-            },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: 'nav 3',
-            },
-          ]}*/
         >
           <Menu.Item key="1" icon={<UserOutlined/>}><Link to={"/user/dashboard1"}>Account Settings 1</Link></Menu.Item>
           <Menu.Item key="2" icon={<VideoCameraOutlined/>}><Link to={"/user/dashboard2"}>Account Settings
@@ -145,7 +129,6 @@ const UserPage = () => {
 
           <div className={"container flex py-1 items-center justify-end gap-8"}>
             <Badge count={count}>
-              {/*<BellOutlined  />*/}
               <Avatar
                 shape="square"
                 size="large"
@@ -163,15 +146,12 @@ const UserPage = () => {
           </div>
 
 
-          {/*<Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />*/}
-
         </Header>
 
 
         <Routes>
 
-          {/*<Route path={"/dashboard"} element={<SuperAdminDashboard/>}/>*/}
-          <Route path={"/user"} element={ <UserDashboard /> }/>
+           <Route path={"/user"} element={ <UserDashboard /> }/>
 
         </Routes>
 
