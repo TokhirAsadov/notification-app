@@ -15,7 +15,6 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +34,11 @@ public class PermissionPostImplService implements PermissionPostService{
     @Override
     public List<PermissionPost> getAll() {
         return postRepository.findAll();
+    }
+
+    @Override
+    public List<PermissionPost> getAllById(String userId) {
+        return postRepository.findAllByCreatedByOrderByCreatedAt(userId);
     }
 
     @Override
@@ -72,11 +76,11 @@ public class PermissionPostImplService implements PermissionPostService{
     }
 
     @Override
-    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts() {
+    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts(String userId) {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())
                 .map(sequence -> ServerSentEvent.<List<PermissionPost>>builder().id(String.valueOf(sequence))
-                        .event("post-list-event").data(getAll())
+                        .event("post-list-event").data(userId==null ? getAll() : getAllById(userId))
                         .build());
     }
 
