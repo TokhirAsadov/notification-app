@@ -54,7 +54,7 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <Input className={"p-2 w-72"} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Enter title" />
+          <Input className={"p-2 w-80"} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Enter title" />
         </Form.Item>
 
         <Form.Item
@@ -67,7 +67,7 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <DatePicker className={"p-2 w-72"} showTime onChange={onChange} onOk={onOk} />
+          <DatePicker className={"p-2 w-80"} showTime onChange={onChange} onOk={onOk} />
         </Form.Item>
         <Form.Item
           className={"w-full flex justify-center"}
@@ -79,7 +79,7 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <DatePicker className={"p-2 w-72"} showTime onChange={onChange} onOk={onOk} />
+          <DatePicker className={"p-2 w-80"} showTime onChange={onChange} onOk={onOk} />
         </Form.Item>
 
         <Form.Item
@@ -92,7 +92,7 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <TextArea className={"w-72"} row={6} showCount maxLength={200} style={{ height: 120 }}  />
+          <TextArea className={"w-80"} row={6} showCount maxLength={200} style={{ height: 120 }}  />
         </Form.Item>
 
 
