@@ -12,11 +12,12 @@ import java.util.List;
 
 public interface PermissionPostService {
 
-    Flux<ServerSentEvent<List<PermissionPost>>> streamPosts();
+    Flux<ServerSentEvent<List<PermissionPost>>> streamPosts(String userId);
 
     PermissionPost getPostByID(String postID);
 
     List<PermissionPost> getAll();
+    List<PermissionPost> getAllById(String userId);
 
    PermissionPost create(User user,PermissionPost post);
 
