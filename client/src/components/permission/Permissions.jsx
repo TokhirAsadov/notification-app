@@ -1,9 +1,10 @@
 import React from 'react';
 import PermissionItem from "./PermissionItem";
+import { motion as m } from "framer-motion";
 
 const Permissions = ({posts}) => {
   return (
-    <div className={"flex bg-gray-200 flex-col gap-4 mt-4 p-4"}>
+    <m.div layout className={"flex bg-gray-200 flex-col gap-4 mt-4 p-4"} >
       {
         posts?.map(
           (post,index) => <PermissionItem
@@ -22,7 +23,7 @@ const Permissions = ({posts}) => {
           />
         )
       }
-    </div>
+    </m.div>
   );
 };
 
