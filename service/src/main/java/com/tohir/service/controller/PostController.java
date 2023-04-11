@@ -20,8 +20,8 @@ public class PostController {
     private final PermissionPostService postService;
 
     @GetMapping("/stream")
-    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts() {
-        return postService.streamPosts();
+    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts(@RequestParam(required = false,name="userId") String userId) {
+        return postService.streamPosts(userId);
     }
 
     @PostMapping("/create")
