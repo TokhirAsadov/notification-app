@@ -2,7 +2,8 @@ import React from 'react';
 import {Form, Input} from "antd";
 import { UserOutlined} from "@ant-design/icons";
 import { DatePicker } from 'antd';
-import PermissionItem from "./PermissionItem";
+import {motion as m} from "framer-motion";
+
 const { TextArea } = Input;
 
 const Card = ({createPost,title,key}) => {
@@ -26,10 +27,14 @@ const Card = ({createPost,title,key}) => {
   };
 
   return (
-    <div className={"container p-1"}>
+    <m.div className={"container p-1"}
+         initial={{ opacity: 0 }}
+         animate={{ opacity: 1 }}
+         transition={{ duration: 0.7 }}
+    >
       <Form
         name="basic"
-        className={"flex flex-col items-center gap-1"}
+        className={"flex flex-col items-center gap-1 p-4"}
         style={{ backgroundColor: "#b7eb8f" }}
         initialValues={{
           remember: true,
@@ -38,10 +43,10 @@ const Card = ({createPost,title,key}) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <h3 className={"w-full mt-2 flex justify-center text-green-500 self-center text-xl mb-8"}>Create new object</h3>
+        <h3 className={"w-full mt-4 flex justify-center text-green-500 self-center text-2xl mb-4"}>Create new object</h3>
         <Form.Item
           name="content"
-          className={"flex justify-between"}
+          className={"w-full flex justify-center"}
           rules={[
             {
               required: true,
@@ -49,11 +54,11 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <Input className={"p-2 w-full"} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Enter title" />
+          <Input className={"p-2 w-72"} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Enter title" />
         </Form.Item>
 
         <Form.Item
-          className={"flex justify-between"}
+          className={"w-full flex justify-center"}
           name="fromDate"
           rules={[
             {
@@ -62,10 +67,10 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <DatePicker className={"p-2 w-full"} showTime onChange={onChange} onOk={onOk} />
+          <DatePicker className={"p-2 w-72"} showTime onChange={onChange} onOk={onOk} />
         </Form.Item>
         <Form.Item
-          className={"flex justify-between"}
+          className={"w-full flex justify-center"}
           name="toDate"
           rules={[
             {
@@ -74,11 +79,11 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <DatePicker className={"p-2 w-full"} showTime onChange={onChange} onOk={onOk} />
+          <DatePicker className={"p-2 w-72"} showTime onChange={onChange} onOk={onOk} />
         </Form.Item>
 
         <Form.Item
-          className={"flex justify-between"}
+          className={"w-full flex justify-center"}
           name="description"
           rules={[
             {
@@ -87,24 +92,18 @@ const Card = ({createPost,title,key}) => {
             },
           ]}
         >
-          <TextArea className={"p-2 w-full"} showCount maxLength={200} />
+          <TextArea className={"w-72"} row={6} showCount maxLength={200} style={{ height: 120 }}  />
         </Form.Item>
 
 
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
+
           <button type="primary"  className={
-            "self-center bg-green-500 hover:bg-green-700 px-4 py-1 text-white rounded"
+            "self-center bg-green-500 hover:bg-green-700 px-4 py-1 text-white rounded mb-4"
           }>
             Submit
           </button>
-        </Form.Item>
       </Form>
-    </div>
+    </m.div>
   );
 };
 
