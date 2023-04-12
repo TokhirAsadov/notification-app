@@ -2,21 +2,20 @@ import React, {useEffect, useState} from 'react';
 import {Link, Route, Routes} from "react-router-dom";
 import SuperAdminDashboard from "../components/super/SuperAdminDashboard";
 import {
-  MenuFoldOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  MenuUnfoldOutlined,
   UploadOutlined,
   VideoCameraOutlined,
   UserOutlined,
-  BellOutlined
+  SettingOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
-import {Tabs, Layout, Menu, theme, Avatar, Badge, Button, Drawer} from 'antd';
-import Card from "../components/permission/Card";
+import {Tabs, Layout, Menu, theme, Button, Drawer} from 'antd';
 import History from "../components/permission/History";
-import {BASE_URL} from "../utills/ServiceUrls";
+import {BASE_URL, logOut} from "../utills/ServiceUrls";
+import {useSelector} from "react-redux";
+import SideHeader from "../components/header/SideHeader";
+import Permissions from "../components/permission/Permissions";
 
-const {Header, Content, Sider} = Layout;
+const { Content, Sider} = Layout;
 
 const ButtonGroup = Button.Group;
 
@@ -30,6 +29,9 @@ const SuperAdmin = () => {
   const [count, setCount] = useState(5);
   const [open, setOpen] = useState(false);
 
+  const [posts,setPosts] = useState([]);
+  const user = useSelector(state => state?.user?.user)
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -37,25 +39,22 @@ const SuperAdmin = () => {
     setOpen(false);
   };
 
-  const increase = () => {
-    setCount(count + 1);
-  };
+  useEffect(()=> {
+      const sse = new EventSource(BASE_URL + '/post/stream');
 
-  const decline = () => {
-    let newCount = count - 1;
-    if (newCount < 0) {
-      newCount = 0;
-    }
-    setCount(newCount);
-  };
+      sse.addEventListener("post-list-event", (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data, "stream listener")
+        setPosts(data)
+      });
+      sse.onerror = () => {
+        sse.close();
+      };
+      return () => {
+        sse.close();
+      };
+  },[])
 
-  // useEffect(()=> {
-  //   const sse = new EventSource(BASE_URL+'/post/stream');
-  //
-  //   sse.addEventListener("post-list-event",(event) => {
-  //     console.log(event,"stream listener")
-  //   });
-  // },[])
 
 
   return (
@@ -85,7 +84,7 @@ const SuperAdmin = () => {
       </Sider>
 
       <Layout className="site-layout">
-        <Header
+      {/*  <Header
           style={{
             padding: 0,
             background: colorBgContainer,
@@ -100,7 +99,7 @@ const SuperAdmin = () => {
 
           <div className={"container flex py-1 items-center justify-end gap-8"}>
             <Badge count={count}>
-              {/*<BellOutlined  />*/}
+              <BellOutlined  />
               <Avatar
                 shape="square"
                 size="large"
@@ -110,15 +109,26 @@ const SuperAdmin = () => {
               />
             </Badge>
 
-            <ButtonGroup>
-              <Button onClick={decline} icon={<MinusOutlined/>}/>
-              <Button onClick={increase} icon={<PlusOutlined/>}/>
-            </ButtonGroup>
+            <Dropdown
+              menu={{
+                items,
+              }}
+              trigger={['click']}
+              className={"mr-4"}
+            >
+              <a onClick={(e) => e.preventDefault()}>
+                <Space className={"border p-4 h-8 w-8 rounded-full flex items-center justify-center"}>
+                  <UserOutlined className={"h-8 w-8 flex items-center justify-center"}/>
+                </Space>
+              </a>
+            </Dropdown>
 
           </div>
 
 
-        </Header>
+        </Header>*/}
+
+        <SideHeader showDrawer={showDrawer} />
 
 
         <Routes>
@@ -141,7 +151,7 @@ const SuperAdmin = () => {
       </Layout>
 
 
-      <Drawer title="Basic Drawer" placement="right" onClose={onClose} open={open}>
+      <Drawer width={500} title="Basic Drawer" placement="right" onClose={onClose} open={open}>
 
 
         <Tabs
@@ -151,7 +161,10 @@ const SuperAdmin = () => {
               {
                 key: 1,
                 label: "Permission",
-                component: <Card key={1} title={"Card"} />
+                component: <>
+                  {/*<Card createPost={createPost} title={"Card"} />*/}
+                  <Permissions posts={posts}/>
+                </>
               },
               {
                 key: 2,
