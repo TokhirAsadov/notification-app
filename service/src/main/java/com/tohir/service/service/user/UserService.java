@@ -1,5 +1,6 @@
 package com.tohir.service.service.user;
 
+import com.tohir.service.entity.User;
 import com.tohir.service.payload.*;
 
 public interface UserService {
@@ -16,4 +17,5 @@ public interface UserService {
     ResToken login(SignInDto signInDto);
 
     UserDto getUserFields(String id);
+    UserDto generateUserDto(User user);
 }

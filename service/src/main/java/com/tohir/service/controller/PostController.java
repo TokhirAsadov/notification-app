@@ -3,6 +3,7 @@ package com.tohir.service.controller;
 import com.tohir.service.entity.User;
 import com.tohir.service.entity.permissionPost.PermissionPost;
 import com.tohir.service.payload.CommentRequest;
+import com.tohir.service.payload.PPermissionDto;
 import com.tohir.service.security.CurrentUser;
 import com.tohir.service.service.permissionPost.PermissionPostService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PostController {
     private final PermissionPostService postService;
 
     @GetMapping("/stream")
-    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts(@RequestParam(required = false,name="userId") String userId) {
+    public Flux<ServerSentEvent<List<PPermissionDto>>> streamPosts(@RequestParam(required = false,name="userId") String userId) {
         return postService.streamPosts(userId);
     }
 
@@ -37,6 +38,11 @@ public class PostController {
     @DeleteMapping("/commit/{commitId}")
     public ResponseEntity<PermissionPost> deletePCommit(@CurrentUser User user, @PathVariable(name = "commitId") String pcommitId,@RequestParam(name = "postId") String postId) {
         return ResponseEntity.ok(postService.deletePCommit(user,postId,pcommitId));
+    }
+
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<String> deletePermissionPost(@CurrentUser User user, @PathVariable(name = "postId") String postId) {
+        return ResponseEntity.ok(postService.deletePermissionPost(user,postId));
     }
 
 }

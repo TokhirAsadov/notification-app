@@ -4,8 +4,12 @@ import com.tohir.service.entity.User;
 import com.tohir.service.entity.permissionPost.PCommit;
 import com.tohir.service.entity.permissionPost.PermissionPost;
 import com.tohir.service.payload.CommentRequest;
+import com.tohir.service.payload.PPermissionDto;
+import com.tohir.service.payload.UserDto;
 import com.tohir.service.repository.PCommitRepository;
 import com.tohir.service.repository.PermissionPostRepository;
+import com.tohir.service.repository.UserRepository;
+import com.tohir.service.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,8 @@ import java.util.stream.Collectors;
 public class PermissionPostImplService implements PermissionPostService{
     private final PermissionPostRepository postRepository;
     private final PCommitRepository commitRepository;
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
 
 
@@ -32,13 +37,13 @@ public class PermissionPostImplService implements PermissionPostService{
     }
 
     @Override
-    public List<PermissionPost> getAll() {
-        return postRepository.findAll();
+    public List<PPermissionDto> getAll() {
+        return postRepository.findAll().stream().map(this::generateDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<PermissionPost> getAllById(String userId) {
-        return postRepository.findAllByCreatedByOrderByCreatedAt(userId);
+    public List<PPermissionDto> getAllById(String userId) {
+        return postRepository.findAllByCreatedByOrderByCreatedAt(userId).stream().map(this::generateDto).collect(Collectors.toList());
     }
 
     @Override
@@ -76,12 +81,36 @@ public class PermissionPostImplService implements PermissionPostService{
     }
 
     @Override
-    public Flux<ServerSentEvent<List<PermissionPost>>> streamPosts(String userId) {
+    public String deletePermissionPost(User user, String postId) {
+        postRepository.deleteById(postId);
+        return "deleted success fully!.";
+    }
+
+    @Override
+    public Flux<ServerSentEvent<List<PPermissionDto>>> streamPosts(String userId) {
         return Flux.interval(Duration.ofSeconds(2))
                 .publishOn(Schedulers.boundedElastic())
-                .map(sequence -> ServerSentEvent.<List<PermissionPost>>builder().id(String.valueOf(sequence))
+                .map(sequence -> ServerSentEvent.<List<PPermissionDto>>builder().id(String.valueOf(sequence))
                         .event("post-list-event").data(userId==null ? getAll() : getAllById(userId))
                         .build());
+    }
+
+    public PPermissionDto generateDto(PermissionPost post){
+        return new PPermissionDto(
+                post.getId(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.getCreatedBy(),
+                post.getUpdatedBy(),
+
+                post.getContent(),
+                post.getFromDate(),
+                post.getToDate(),
+                post.getDescription(),
+                post.getStatus(),
+                post.getCommits(),
+                userService.getUserFields(post.getCreatedBy())
+        );
     }
 
 

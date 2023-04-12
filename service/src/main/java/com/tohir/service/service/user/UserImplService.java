@@ -216,6 +216,8 @@ public class UserImplService implements UserService{
                 dto.getRoles().stream().map(roleService::generateRole).collect(Collectors.toSet())
         );
     }
+
+    @Override
     public UserDto generateUserDto(User user) {
         return new UserDto(
                 user.getId(),
