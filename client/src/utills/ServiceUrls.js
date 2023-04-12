@@ -10,6 +10,7 @@ export const navbarHeight = "60px";
 
 export const TokenType="Bearer ";
 export const TOKEN='10b2a5bb-69df-45d5-8015-43671443dbe9';
+export const USER_STORE='store';
 
 export const getHeaders = () => {
   const token=localStorage.getItem(TOKEN)
@@ -23,6 +24,12 @@ export const getHeaders = () => {
 export const getToken = () => {
   const token=localStorage.getItem(TOKEN);
   return { token }
+}
+
+export const logOut = () => {
+  localStorage.removeItem(TOKEN);
+  localStorage.removeItem(USER_STORE);
+  window.location.replace('/login')
 }
 
 export const BASE_URL = "http://localhost:7070/api/v1/desktop";
