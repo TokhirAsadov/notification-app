@@ -20,6 +20,7 @@ const Permissions = ({posts}) => {
             updatedAt={post?.updatedAt}
             createdBy={post?.createdBy}
             updatedBy={post?.updatedBy}
+            owner={post?.user}
           />
         )
       }
