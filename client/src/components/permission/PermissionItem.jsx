@@ -1,13 +1,23 @@
 import React, {useState} from 'react';
-import { CommentOutlined,MoreOutlined,DeleteOutlined,CalendarOutlined,ArrowRightOutlined,SendOutlined } from '@ant-design/icons';
+import {
+  CommentOutlined,
+  MoreOutlined,
+  DeleteOutlined,
+  CalendarOutlined,
+  ArrowRightOutlined,
+  SendOutlined,
+  CloseCircleOutlined,
+   CheckCircleOutlined
+} from '@ant-design/icons';
 import moment from "moment";
-import {Input} from "antd";
+import {Input, Button, Divider, Dropdown, Space, theme } from "antd";
 import axios from "axios";
 import {BASE_URL, getHeaders} from "../../utills/ServiceUrls";
 import {useSelector} from "react-redux";
 import { motion as m } from "framer-motion";
+const { useToken } = theme;
 
-const PermissionItem = ({permissionPostId,content,status,description,createdAt,updatedAt,createdBy,updatedBy,fromDate,toDate,commits}) => {
+const PermissionItem = ({permissionPostId,content,status,description,createdAt,updatedAt,createdBy,updatedBy,fromDate,toDate,commits,owner}) => {
 
   const user = useSelector(state => state?.user?.user);
   const role = user?.roles?.find(i=>i?.roleName==="ROLE_USER");
@@ -39,6 +49,14 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
       })
   }
 
+  const { token } = useToken();
+  const contentStyle = {
+    backgroundColor: token.colorBgElevated,
+    borderRadius: token.borderRadiusLG,
+    boxShadow: token.boxShadowSecondary,
+  };
+
+
   return (
     <m.div layout key={permissionPostId} className={"container bg-white border p-4 rounded-lg"}>
       <m.div layout className={"container flex justify-between"}>
@@ -46,7 +64,22 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
           <div>{content}</div>
           <div className={"w-8 h-8 flex items-center justify-center hover:bg-gray-200 mr-8 cursor-pointer rounded-full transition"} onClick={()=> setOpenAllData(prevState => !prevState)}><MoreOutlined/></div>
         </div>
-        <button className={`rounded p-2 text-gray-600 ${status ==='AT_PROCESS' ? 'bg-yellow-300' : status ==='SUCCESS' ? 'bg-green-500': 'bg-red-500'} ${role ? 'cursor-not-allowed':"cursor-pointer"}`}>{status}</button>
+
+        <Dropdown
+          dropdownRender={(menu) => (
+            <div style={contentStyle}>
+              <Divider style={{ margin: 0 }} />
+              <Space style={{ padding: 8 }} className={"flex gap-2 w-56 justify-between py-4 px-8"}>
+                <button className={"flex items-center justify-center bg-green-500 hover:bg-green-600 focus:bg-green-400 py-2 px-4 text-white rounded"}><CheckCircleOutlined className={"mr-1"}/> SUCCESS</button>
+                <button className={"flex items-center justify-center bg-red-500 hover:bg-red-600 focus:bg-red-400 py-2 px-4 text-white rounded"}><CloseCircleOutlined className={"mr-1"} /> REJECT</button>
+              </Space>
+            </div>
+          )}
+        >
+          <button className={`text-gray-600 rounded p-2 text-gray-600 ${status ==='AT_PROCESS' ? 'bg-yellow-300' : status ==='SUCCESS' ? 'bg-green-500': 'bg-red-500'} ${role ? 'cursor-not-allowed':"cursor-pointer"}`}>{status}</button>
+        </Dropdown>
+
+
       </m.div>
       {/*todo------------------ tuliq barcha ma`lumotlarni chiqarish kk --------------------*/}
       {
@@ -102,7 +135,9 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
               <div>
                 {user?.id===commit?.createdBy ? "you: " : role ? "admin: " : "user: "}{commit?.content}
               </div>
-              <button onClick={()=>deleteCommit(permissionPostId,commit?.id)} className={"w-8 h-8 flex items-center justify-center p-1 rounded-full bg-white text-red-500 hover:bg-red-500 hover:text-white transition "}><DeleteOutlined /></button>
+              {
+                user?.id===commit?.createdBy && <button onClick={()=>deleteCommit(permissionPostId,commit?.id)} className={"w-8 h-8 flex items-center justify-center p-1 rounded-full bg-white text-red-500 hover:bg-red-500 hover:text-white transition "}><DeleteOutlined /></button>
+              }
             </m.div>)
           }
         </m.div>
@@ -112,7 +147,7 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
         <div className={"flex items-center gap-1 text-xs"}>
           <CalendarOutlined /> {moment(new Date(createdAt)).format('HH:mm:ss DD-MM-YYYY')}
         </div>
-        <div className={" ml-4"}>username</div>
+        <div className={" ml-4"}>{`${owner?.firstName?.substring(0,1)}.${owner?.lastName}`}</div>
       </m.div>
 
     </m.div>
