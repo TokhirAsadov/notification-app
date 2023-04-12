@@ -5,6 +5,7 @@ import com.tohir.service.entity.temp.AbsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class PermissionPost extends AbsEntity {
     @Enumerated(EnumType.STRING)
     private PPostStatus status;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
     private Set<PCommit> commits;
 
     public PermissionPost(String id, String content, Date fromDate, Date toDate, String description, PPostStatus status, Set<PCommit> commits) {
