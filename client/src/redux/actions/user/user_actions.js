@@ -1,5 +1,5 @@
 import {userFetched, userFetchingError} from "../../slice/user/user_slice";
-import {BASE_URL, TOKEN, TokenType, USER} from "../../../utills/ServiceUrls";
+import {BASE_URL, TOKEN, TokenType, USER, USER_STORE} from "../../../utills/ServiceUrls";
 
 export const fetchUser = (request) => (dispatch) => {
   const token=localStorage.getItem(TOKEN)
@@ -18,7 +18,7 @@ export const fetchUser = (request) => (dispatch) => {
 export function saveToLocalStorage(store) {
   try {
     const serializedStore = JSON.stringify(store);
-    window.localStorage.setItem("store",serializedStore);
+    window.localStorage.setItem(USER_STORE,serializedStore);
   }catch (e){
     console.log(e);
   }
@@ -28,7 +28,7 @@ export function saveToLocalStorage(store) {
 // export const dispatch = useDispatch();
 export function loadFromLocalStorage() {
   try {
-    const serializedStore = window.localStorage.getItem("store");
+    const serializedStore = window.localStorage.getItem(USER_STORE);
     if (serializedStore === null) return undefined;
     return JSON.parse(serializedStore);
   }catch (e){
