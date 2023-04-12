@@ -1,28 +1,26 @@
 import React, { useState,useEffect } from 'react';
 import {Link, Route, Routes} from "react-router-dom";
-import SuperAdminDashboard from "../components/super/SuperAdminDashboard";
 import {
-  MenuFoldOutlined,
-  MinusOutlined,
-  PlusOutlined,
-  MenuUnfoldOutlined,
   UploadOutlined,
   VideoCameraOutlined,
   UserOutlined,
-  BellOutlined
+  BellOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+  PoweroffOutlined
 } from '@ant-design/icons';
-import {Tabs, Layout, Menu, theme, Avatar, Badge, Button, Drawer} from 'antd';
+import {Tabs, Layout, Menu, theme,  Button, Drawer } from 'antd';
 import Card from "../components/permission/Card";
 import History from "../components/permission/History";
 import UserDashboard from "../components/user/UserDashboard";
-import {BASE_URL, getHeaders} from "../utills/ServiceUrls";
+import {BASE_URL, getHeaders, logOut} from "../utills/ServiceUrls";
 import axios from "axios";
 import Permissions from "../components/permission/Permissions";
 import {useSelector} from "react-redux";
+import SideHeader from "../components/header/SideHeader";
 
-const {Header, Content, Sider} = Layout;
+const { Content, Sider} = Layout;
 
-const ButtonGroup = Button.Group;
 
 const UserPage = () => {
 
@@ -56,33 +54,24 @@ const UserPage = () => {
     setOpen(false);
   };
 
-  const increase = () => {
-    setCount(count + 1);
-  };
-
-  const decline = () => {
-    let newCount = count - 1;
-    if (newCount < 0) {
-      newCount = 0;
-    }
-    setCount(newCount);
-  };
 
   useEffect(()=> {
-    const sse = new EventSource(BASE_URL+'/post/stream?userId='+user?.id);
+    if (user) {
+      const sse = new EventSource(BASE_URL + '/post/stream?userId=' + user?.id);
 
-    sse.addEventListener("post-list-event",(event) => {
-      const data = JSON.parse(event.data);
-      console.log(data,"stream listener")
-      setPosts(data)
-    });
-    sse.onerror = () => {
-      sse.close();
-    };
-    return () => {
-      sse.close();
-    };
-  },[])
+      sse.addEventListener("post-list-event", (event) => {
+        const data = JSON.parse(event.data);
+        console.log(data, "stream listener")
+        setPosts(data)
+      });
+      sse.onerror = () => {
+        sse.close();
+      };
+      return () => {
+        sse.close();
+      };
+    }
+  },[user])
 
 
 
@@ -114,7 +103,7 @@ const UserPage = () => {
       </Sider>
 
       <Layout className="site-layout">
-        <Header
+       {/* <Header
           style={{
             padding: 0,
             background: colorBgContainer,
@@ -127,7 +116,7 @@ const UserPage = () => {
             onClick: () => setCollapsed(!collapsed),
           })}
 
-          <div className={"container flex py-1 items-center justify-end gap-8"}>
+          <div className={"container h-16 flex items-center justify-end gap-8"}>
             <Badge count={count}>
               <Avatar
                 shape="square"
@@ -138,15 +127,26 @@ const UserPage = () => {
               />
             </Badge>
 
-            <ButtonGroup>
-              <Button onClick={decline} icon={<MinusOutlined/>}/>
-              <Button onClick={increase} icon={<PlusOutlined/>}/>
-            </ButtonGroup>
+            <Dropdown
+              menu={{
+                items,
+              }}
+              trigger={['click']}
+              className={"mr-4"}
+            >
+              <a onClick={(e) => e.preventDefault()}>
+                <Space className={"border p-4 h-8 w-8 rounded-full flex items-center justify-center"}>
+                  <UserOutlined className={"h-8 w-8 flex items-center justify-center"}/>
+                </Space>
+              </a>
+            </Dropdown>
 
           </div>
 
 
-        </Header>
+        </Header>*/}
+
+        <SideHeader showDrawer={showDrawer} />
 
 
         <Routes>
@@ -179,14 +179,14 @@ const UserPage = () => {
                 key: 1,
                 label: "Permission",
                 component: <>
-                  <Card createPost={createPost} key={1} title={"Card"} />
+                  <Card createPost={createPost} title={"Card"} />
                   <Permissions posts={posts}/>
                 </>
               },
               {
                 key: 2,
                 label: "History",
-                component: <History key={2} title={"History"} />
+                component: <History title={"History"} />
               }
             ]?.map((item,i) => (
               {
