@@ -6,7 +6,7 @@ import {motion as m} from "framer-motion";
 
 const { TextArea } = Input;
 
-const Card = ({createPost,title,key}) => {
+const Card = ({createPost}) => {
 
 
   const onFinish = (values) => {
