@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect,useState} from 'react';
 import {
   BellOutlined,
   LogoutOutlined,
@@ -7,19 +7,19 @@ import {
   SettingOutlined,
   UserOutlined
 } from "@ant-design/icons";
-import {logOut} from "../../utills/ServiceUrls";
-import {Avatar, Badge, Dropdown, Layout, Space, theme} from "antd";
+import {BASE_URL, logOut} from "../../utills/ServiceUrls";
+import {Avatar, Badge, Dropdown, Layout, Space, Spin, theme} from "antd";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchNotification} from "../../redux/actions/notification/notification_action";
 
 
 const { Header } = Layout;
 
 
-const SideHeader = ({showDrawer}) => {
+const SideHeader = ({showDrawer,collapsed,setCollapsed,user}) => {
   const {
     token: {colorBgContainer},
   } = theme.useToken();
-  const [collapsed, setCollapsed] = useState(false);
-  const [count, setCount] = useState(5);
 
   const items = [
     {
@@ -38,7 +38,43 @@ const SideHeader = ({showDrawer}) => {
       key: '2',
     },
   ];
+
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(()=> {
+    console.log(user?.id,"user")
+    user?.id && setLoading(false);
+  },[user])
+
+  useEffect(()=>{
+    console.log(loading,"loading change")
+    if (!loading) {
+      const sse = new EventSource(BASE_URL + '/notification/stream?userId=' + user?.id);
+
+      sse.addEventListener("user-list-event", (event) => {
+        const data = JSON.parse(event.data);
+
+        dispatch(fetchNotification(data))
+
+        console.log(data, "notification stream listener")
+
+      });
+      sse.onerror = () => {
+        sse.close();
+      };
+      return () => {
+        sse.close();
+      };
+    }
+  },[loading])
+
+
+  const notification = useSelector(state => state?.notification?.notification) || [];
+
   return (
+    <Spin spinning={loading} delay={500}>
       <Header
         style={{
           padding: 0,
@@ -53,7 +89,7 @@ const SideHeader = ({showDrawer}) => {
         })}
 
         <div className={"container h-16 flex items-center justify-end gap-8"}>
-          <Badge count={count}>
+          <Badge count={notification?.length}>
             <Avatar
               shape="square"
               size="large"
@@ -81,6 +117,7 @@ const SideHeader = ({showDrawer}) => {
 
 
       </Header>
+    </Spin>
   );
 };
 
