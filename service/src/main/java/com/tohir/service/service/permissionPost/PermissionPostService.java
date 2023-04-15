@@ -3,6 +3,7 @@ package com.tohir.service.service.permissionPost;
 import com.tohir.service.entity.User;
 import com.tohir.service.entity.permissionPost.PCommit;
 import com.tohir.service.entity.permissionPost.PermissionPost;
+import com.tohir.service.payload.ChangeStatusDto;
 import com.tohir.service.payload.CommentRequest;
 import com.tohir.service.payload.PPermissionDto;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +28,6 @@ public interface PermissionPostService {
     PermissionPost deletePCommit(User user, String postId, String pcommitId);
 
     String deletePermissionPost(User user, String postId);
+
+    PermissionPost changeStatusOfPost(User user, ChangeStatusDto dto);
 }
