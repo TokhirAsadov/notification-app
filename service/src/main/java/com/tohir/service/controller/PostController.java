@@ -2,6 +2,7 @@ package com.tohir.service.controller;
 
 import com.tohir.service.entity.User;
 import com.tohir.service.entity.permissionPost.PermissionPost;
+import com.tohir.service.payload.ChangeStatusDto;
 import com.tohir.service.payload.CommentRequest;
 import com.tohir.service.payload.PPermissionDto;
 import com.tohir.service.security.CurrentUser;
@@ -28,6 +29,11 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<PermissionPost> createPost(@CurrentUser User user, @RequestBody PermissionPost post) {
         return ResponseEntity.ok(postService.create(user,post));
+    }
+
+    @PutMapping("/change")
+    public ResponseEntity<PermissionPost> changeStatusOfPost(@CurrentUser User user, @RequestBody ChangeStatusDto dto) {
+        return ResponseEntity.ok(postService.changeStatusOfPost(user,dto));
     }
 
     @PostMapping("/commit")
