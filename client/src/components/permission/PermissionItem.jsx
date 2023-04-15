@@ -10,7 +10,7 @@ import {
    CheckCircleOutlined
 } from '@ant-design/icons';
 import moment from "moment";
-import {Input, Button, Divider, Dropdown, Space, theme } from "antd";
+import {Input, Divider, Dropdown, Space, theme } from "antd";
 import axios from "axios";
 import {BASE_URL, getHeaders} from "../../utills/ServiceUrls";
 import {useSelector} from "react-redux";
@@ -56,6 +56,16 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
     boxShadow: token.boxShadowSecondary,
   };
 
+  const onChangeStatus = (id,status) => {
+    axios.put(BASE_URL+"/post/change",{id,status},{headers})
+      .then(res => {
+        console.log(res,'change status put success fully.')
+      })
+      .catch(err => {
+        console.log(err,"change status error......")
+      })
+  }
+
 
   return (
     <m.div layout key={permissionPostId} className={"container bg-white border p-4 rounded-lg"}>
@@ -66,12 +76,13 @@ const PermissionItem = ({permissionPostId,content,status,description,createdAt,u
         </div>
 
         <Dropdown
+          disabled={role}
           dropdownRender={(menu) => (
             <div style={contentStyle}>
               <Divider style={{ margin: 0 }} />
               <Space style={{ padding: 8 }} className={"flex gap-2 w-56 justify-between py-4 px-8"}>
-                <button className={"flex items-center justify-center bg-green-500 hover:bg-green-600 focus:bg-green-400 py-2 px-4 text-white rounded"}><CheckCircleOutlined className={"mr-1"}/> SUCCESS</button>
-                <button className={"flex items-center justify-center bg-red-500 hover:bg-red-600 focus:bg-red-400 py-2 px-4 text-white rounded"}><CloseCircleOutlined className={"mr-1"} /> REJECT</button>
+                <button onClick={() => onChangeStatus(permissionPostId,"SUCCESS")} className={"flex items-center justify-center bg-green-500 hover:bg-green-600 focus:bg-green-400 py-2 px-4 text-white rounded"}><CheckCircleOutlined className={"mr-1"}/> SUCCESS</button>
+                <button onClick={() => onChangeStatus(permissionPostId,"REJECT")} className={"flex items-center justify-center bg-red-500 hover:bg-red-600 focus:bg-red-400 py-2 px-4 text-white rounded"}><CloseCircleOutlined className={"mr-1"} /> REJECT</button>
               </Space>
             </div>
           )}
