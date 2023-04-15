@@ -11,6 +11,7 @@ export const navbarHeight = "60px";
 export const TokenType="Bearer ";
 export const TOKEN='10b2a5bb-69df-45d5-8015-43671443dbe9';
 export const USER_STORE='store';
+export const NOTIFICATION_STORE='notifications';
 
 export const getHeaders = () => {
   const token=localStorage.getItem(TOKEN)
