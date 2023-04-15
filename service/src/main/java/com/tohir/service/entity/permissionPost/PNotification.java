@@ -28,8 +28,8 @@ public class PNotification extends AbsEntity {
     private User userFrom;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "PNotification_type")
-    private PPostStatus PNotificationType;
+    @Column(name = "type")
+    private PPostStatus type;
 
     @Column(name = "delivered")
     private boolean delivered;
