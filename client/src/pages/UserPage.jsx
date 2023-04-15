@@ -4,20 +4,17 @@ import {
   UploadOutlined,
   VideoCameraOutlined,
   UserOutlined,
-  BellOutlined,
-  LogoutOutlined,
-  SettingOutlined,
-  PoweroffOutlined
 } from '@ant-design/icons';
-import {Tabs, Layout, Menu, theme,  Button, Drawer } from 'antd';
+import {Tabs, Layout, Menu, theme, Drawer, Spin} from 'antd';
 import Card from "../components/permission/Card";
 import History from "../components/permission/History";
 import UserDashboard from "../components/user/UserDashboard";
-import {BASE_URL, getHeaders, logOut} from "../utills/ServiceUrls";
+import {BASE_URL, getHeaders} from "../utills/ServiceUrls";
 import axios from "axios";
 import Permissions from "../components/permission/Permissions";
 import {useSelector} from "react-redux";
 import SideHeader from "../components/header/SideHeader";
+import Notifications from "../components/permission/Notifications";
 
 const { Content, Sider} = Layout;
 
@@ -44,7 +41,6 @@ const UserPage = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const [count, setCount] = useState(5);
   const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
@@ -55,8 +51,14 @@ const UserPage = () => {
   };
 
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(()=> {
-    if (user) {
+    user?.id && setLoading(false);
+  },[user])
+
+  useEffect(()=>{
+    if (!loading) {
       const sse = new EventSource(BASE_URL + '/post/stream?userId=' + user?.id);
 
       sse.addEventListener("post-list-event", (event) => {
@@ -71,137 +73,99 @@ const UserPage = () => {
         sse.close();
       };
     }
-  },[user])
-
-
-
-
+  },[loading])
 
   return (
 
-    <Layout>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        style={{
-          minHeight: "100vh"
-        }}
-      >
-        <div className="logo"/>
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-        >
-          <Menu.Item key="1" icon={<UserOutlined/>}><Link to={"/user/dashboard1"}>Account Settings 1</Link></Menu.Item>
-          <Menu.Item key="2" icon={<VideoCameraOutlined/>}><Link to={"/user/dashboard2"}>Account Settings
-            2</Link></Menu.Item>
-          <Menu.Item key="3" icon={<UploadOutlined/>}><Link to={"/user/dashboard3"}>Account Settings
-            3</Link></Menu.Item>
-        </Menu>
-      </Sider>
-
-      <Layout className="site-layout">
-       {/* <Header
+    <Spin spinning={loading} delay={500}>
+      <Layout>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
           style={{
-            padding: 0,
-            background: colorBgContainer,
-            display: "grid",
-            gridTemplateColumns: "5rem auto",
+            minHeight: "100vh"
           }}
         >
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => setCollapsed(!collapsed),
-          })}
+          <div className="logo"/>
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={['1']}
+          >
+            <Menu.Item key="1" icon={<UserOutlined/>}><Link to={"/user/dashboard1"}>Account Settings 1</Link></Menu.Item>
+            <Menu.Item key="2" icon={<VideoCameraOutlined/>}><Link to={"/user/dashboard2"}>Account Settings
+              2</Link></Menu.Item>
+            <Menu.Item key="3" icon={<UploadOutlined/>}><Link to={"/user/dashboard3"}>Account Settings
+              3</Link></Menu.Item>
+          </Menu>
+        </Sider>
 
-          <div className={"container h-16 flex items-center justify-end gap-8"}>
-            <Badge count={count}>
-              <Avatar
-                shape="square"
-                size="large"
-                icon={<BellOutlined/>}
-                className={"flex items-center justify-center cursor-pointer"}
-                onClick={showDrawer}
-              />
-            </Badge>
+        <Layout className="site-layout">
 
-            <Dropdown
-              menu={{
-                items,
-              }}
-              trigger={['click']}
-              className={"mr-4"}
-            >
-              <a onClick={(e) => e.preventDefault()}>
-                <Space className={"border p-4 h-8 w-8 rounded-full flex items-center justify-center"}>
-                  <UserOutlined className={"h-8 w-8 flex items-center justify-center"}/>
-                </Space>
-              </a>
-            </Dropdown>
-
-          </div>
+          <SideHeader showDrawer={showDrawer} collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
 
 
-        </Header>*/}
+          <Routes>
 
-        <SideHeader showDrawer={showDrawer} />
+            <Route path={"/user"} element={ <UserDashboard /> }/>
+
+          </Routes>
+
+          <Content
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              minHeight: 280,
+              background: colorBgContainer,
+            }}
+          >
+            Content
+          </Content>
+        </Layout>
 
 
-        <Routes>
+        <Drawer width={500} title="Basic Drawer" placement="right" onClose={onClose} open={open}>
 
-           <Route path={"/user"} element={ <UserDashboard /> }/>
 
-        </Routes>
+          <Tabs
+            defaultActiveKey="2"
+            items={
+              [
+                {
+                  key: 1,
+                  label: "Notifications",
+                  component: <Notifications />
+                },
+                {
+                  key: 2,
+                  label: "Permission",
+                  component: <>
+                    <Card createPost={createPost} title={"Card"} />
+                    <Permissions posts={posts}/>
+                  </>
+                },
+                {
+                  key: 3,
+                  label: "History",
+                  component: <History title={"History"} />
+                }
+              ]?.map((item,i) => (
+                {
+                  label: item?.label,
+                  key: item?.key,
+                  children: item?.component
+                }
+              ))
+            }
+          />
 
-        <Content
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-          }}
-        >
-          Content
-        </Content>
+
+        </Drawer>
+
       </Layout>
+    </Spin>
 
-
-      <Drawer width={500} title="Basic Drawer" placement="right" onClose={onClose} open={open}>
-
-
-        <Tabs
-          defaultActiveKey="2"
-          items={
-            [
-              {
-                key: 1,
-                label: "Permission",
-                component: <>
-                  <Card createPost={createPost} title={"Card"} />
-                  <Permissions posts={posts}/>
-                </>
-              },
-              {
-                key: 2,
-                label: "History",
-                component: <History title={"History"} />
-              }
-            ]?.map((item,i) => (
-              {
-                label: item?.label,
-                key: item?.key,
-                children: item?.component
-              }
-            ))
-          }
-        />
-
-
-      </Drawer>
-
-    </Layout>
 
   );
 };

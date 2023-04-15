@@ -5,19 +5,17 @@ import {
   UploadOutlined,
   VideoCameraOutlined,
   UserOutlined,
-  SettingOutlined,
-  LogoutOutlined
 } from '@ant-design/icons';
-import {Tabs, Layout, Menu, theme, Button, Drawer} from 'antd';
+import {Tabs, Layout, Menu, theme, Drawer} from 'antd';
 import History from "../components/permission/History";
-import {BASE_URL, logOut} from "../utills/ServiceUrls";
+import {BASE_URL} from "../utills/ServiceUrls";
 import {useSelector} from "react-redux";
 import SideHeader from "../components/header/SideHeader";
 import Permissions from "../components/permission/Permissions";
+import Notifications from "../components/permission/Notifications";
 
 const { Content, Sider} = Layout;
 
-const ButtonGroup = Button.Group;
 
 const SuperAdmin = () => {
 
@@ -26,7 +24,6 @@ const SuperAdmin = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const [count, setCount] = useState(5);
   const [open, setOpen] = useState(false);
 
   const [posts,setPosts] = useState([]);
@@ -84,51 +81,8 @@ const SuperAdmin = () => {
       </Sider>
 
       <Layout className="site-layout">
-      {/*  <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-            display: "grid",
-            gridTemplateColumns: "5rem auto",
-          }}
-        >
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => setCollapsed(!collapsed),
-          })}
 
-          <div className={"container flex py-1 items-center justify-end gap-8"}>
-            <Badge count={count}>
-              <BellOutlined  />
-              <Avatar
-                shape="square"
-                size="large"
-                icon={<BellOutlined/>}
-                className={"flex items-center justify-center cursor-pointer"}
-                onClick={showDrawer}
-              />
-            </Badge>
-
-            <Dropdown
-              menu={{
-                items,
-              }}
-              trigger={['click']}
-              className={"mr-4"}
-            >
-              <a onClick={(e) => e.preventDefault()}>
-                <Space className={"border p-4 h-8 w-8 rounded-full flex items-center justify-center"}>
-                  <UserOutlined className={"h-8 w-8 flex items-center justify-center"}/>
-                </Space>
-              </a>
-            </Dropdown>
-
-          </div>
-
-
-        </Header>*/}
-
-        <SideHeader showDrawer={showDrawer} />
+        <SideHeader showDrawer={showDrawer} collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
 
 
         <Routes>
@@ -160,14 +114,19 @@ const SuperAdmin = () => {
             [
               {
                 key: 1,
-                label: "Permission",
+                label: "Notifications",
+                component: <Notifications />
+              },
+              {
+                key: 2,
+                label: "Permissions",
                 component: <>
                   {/*<Card createPost={createPost} title={"Card"} />*/}
                   <Permissions posts={posts}/>
                 </>
               },
               {
-                key: 2,
+                key: 3,
                 label: "History",
                 component: <History key={2} title={"History"} />
               }
