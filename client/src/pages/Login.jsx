@@ -30,7 +30,7 @@ const Login = () => {
           //todo -------------- role lari kup bulsa tanlab site ga kiradigan qilish kk --------------------------------
         }
         else {
-          let roleName = decode.roles[0].roleName;
+          let roleName = decode?.roles[0]?.roleName;
           if (roleName === "ROLE_SUPER_ADMIN" ){
             navigate("/super/dashboard");
           }

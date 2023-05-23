@@ -13,6 +13,7 @@ import {useSelector} from "react-redux";
 import SideHeader from "../components/header/SideHeader";
 import Permissions from "../components/permission/Permissions";
 import Notifications from "../components/permission/Notifications";
+import Calendar from "../components/calendar/Calendar";
 
 const { Content, Sider} = Layout;
 
@@ -72,8 +73,8 @@ const SuperAdmin = () => {
           mode="inline"
           defaultSelectedKeys={['1']}
         >
-          <Menu.Item key="1" icon={<UserOutlined/>}><Link to={"/super/dashboard1"}>Account Settings 1</Link></Menu.Item>
-          <Menu.Item key="2" icon={<VideoCameraOutlined/>}><Link to={"/super/dashboard2"}>Account Settings
+          <Menu.Item key="1" icon={<UserOutlined/>}><Link to={"/super/dashboard"}>Account Settings 1</Link></Menu.Item>
+          <Menu.Item key="2" icon={<VideoCameraOutlined/>}><Link to={"/super/calendar"}>Account Settings
             2</Link></Menu.Item>
           <Menu.Item key="3" icon={<UploadOutlined/>}><Link to={"/super/dashboard3"}>Account Settings
             3</Link></Menu.Item>
@@ -85,12 +86,7 @@ const SuperAdmin = () => {
         <SideHeader showDrawer={showDrawer} collapsed={collapsed} setCollapsed={setCollapsed} user={user} />
 
 
-        <Routes>
 
-          <Route path={"/dashboard"} element={<SuperAdminDashboard/>}/>
-          {/*<Route path={"/user"} element={ <AdminUserAddPage /> }/>*/}
-
-        </Routes>
 
         <Content
           style={{
@@ -100,7 +96,13 @@ const SuperAdmin = () => {
             background: colorBgContainer,
           }}
         >
-          Content
+          <Routes>
+
+            <Route path={"/dashboard"} element={<SuperAdminDashboard/>}/>
+            <Route path={"/calendar"} element={<Calendar data={posts}/>}/>
+            {/*<Route path={"/user"} element={ <AdminUserAddPage /> }/>*/}
+
+          </Routes>
         </Content>
       </Layout>
 
